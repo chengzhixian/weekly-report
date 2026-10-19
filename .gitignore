@@ -1,0 +1,9 @@
+weekly-reports/
+__pycache__/
+*.pyc
+.DS_Store
+
+*.evidence.json
+.work-summaries/
+.env
+.env.*

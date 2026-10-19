@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weekly Report · Example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   Tokyo-Night design tokens (borrowed from the html-ppt skill)
+   ============================================================ */
+:root{
+  --bg-0:#16161e; --bg-1:#1a1b26; --bg-2:#1f2335; --bg-3:#24283b;
+  --bg-hl:#292e42; --border:#2f3450; --border-2:#3b4261;
+  --text-1:#c0caf5; --text-2:#a9b1d6; --text-3:#737aa2; --text-4:#565f89;
+  --blue:#7aa2f7; --cyan:#7dcfff; --teal:#2ac3de; --green:#9ece6a;
+  --purple:#bb9af7; --red:#f7768e; --orange:#ff9e64; --yellow:#e0af68;
+  --grad:linear-gradient(120deg,#7aa2f7,#bb9af7);
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 18px 50px -12px rgba(0,0,0,.65);
+  --maxw:1200px;
+  --sans:'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--sans); color:var(--text-1);
+  background:radial-gradient(1200px 700px at 80% -10%,#222843 0,transparent 60%),
+             radial-gradient(900px 600px at -10% 110%,#1d2138 0,transparent 55%),
+             var(--bg-1);
+  overflow:hidden;
+}
+
+/* ===== deck / slide framework ===== */
+.deck{position:fixed;inset:0}
+.slide{
+  position:absolute;inset:0;
+  padding:60px 84px;
+  display:none;flex-direction:column;justify-content:center;
+  max-width:var(--maxw);margin:0 auto;
+  opacity:0;
+}
+.slide.is-active{display:flex;opacity:1}
+.slide.center{align-items:center;text-align:center}
+
+/* ===== typography ===== */
+.kicker{color:var(--blue);font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.h1{font-size:62px;line-height:1.06;font-weight:800;letter-spacing:-.025em;color:#fff}
+.h2{font-size:40px;font-weight:800;letter-spacing:-.02em;color:#fff}
+.lede{color:var(--text-2);font-size:20px;line-height:1.5;font-weight:400}
+.dim{color:var(--text-3)}
+.mono{font-family:var(--mono)}
+.mt-s{margin-top:10px}.mt-m{margin-top:20px}.mt-l{margin-top:36px}
+.accent{color:var(--blue)} .pur{color:var(--purple)} .grn{color:var(--green)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ===== chrome ===== */
+.deck-head{position:fixed;top:26px;left:84px;right:84px;display:flex;justify-content:space-between;align-items:center;z-index:5;pointer-events:none}
+.brand{font-weight:800;font-size:15px;letter-spacing:.01em;color:var(--text-2)}
+.brand::before{content:"◆";color:var(--blue);margin-right:8px}
+.week-chip{font-family:var(--mono);font-size:12px;color:var(--text-2);background:var(--bg-2);border:1px solid var(--border);padding:7px 14px;border-radius:8px}
+.progress{position:fixed;left:0;bottom:0;height:3px;background:var(--grad);width:0;transition:width .35s ease;z-index:6}
+.pageno{position:fixed;right:30px;bottom:18px;font-family:var(--mono);font-size:12px;color:var(--text-3);z-index:6}
+.foot{position:absolute;left:84px;right:84px;bottom:30px;display:flex;justify-content:space-between;font-size:12px;color:var(--text-4);font-family:var(--mono)}
+
+/* ===== grids & kpi ===== */
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.kpi{background:linear-gradient(180deg,var(--bg-2),var(--bg-1));border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}
+.kpi.g::before{background:var(--green)}.kpi.p::before{background:var(--purple)}.kpi.c::before{background:var(--cyan)}.kpi.o::before{background:var(--orange)}
+.kpi .label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);font-weight:700}
+.kpi .value{font-size:46px;font-weight:800;letter-spacing:-.03em;margin-top:6px;line-height:1;color:#fff}
+.kpi .value small{font-size:20px;color:var(--text-2);font-weight:700}
+.kpi .sub{font-size:12.5px;color:var(--text-3);margin-top:8px}
+
+/* ===== feature cards ===== */
+.feat{background:linear-gradient(165deg,var(--bg-2),var(--bg-1));border:1px solid var(--border);border-radius:var(--radius);padding:30px 30px 26px;position:relative;overflow:hidden}
+.feat .ic{font-size:30px}
+.feat h3{font-size:23px;font-weight:800;color:#fff;margin:14px 0 6px}
+.feat p{font-size:14.5px;color:var(--text-2);line-height:1.55}
+.feat .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.feat::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:var(--grad);opacity:.10;filter:blur(8px)}
+
+/* ===== tags / badges ===== */
+.tag{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 9px;border-radius:6px;display:inline-flex;align-items:center;gap:5px}
+.t-feat{background:rgba(122,162,247,.16);color:var(--blue)}
+.t-fix{background:rgba(158,206,106,.16);color:var(--green)}
+.t-infra{background:rgba(45,195,222,.16);color:var(--teal)}
+.t-build{background:rgba(187,154,247,.16);color:var(--purple)}
+.t-doc{background:rgba(224,175,104,.16);color:var(--yellow)}
+.badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+.b-merged{background:rgba(187,154,247,.18);color:var(--purple)}
+.b-open{background:rgba(158,206,106,.18);color:var(--green)}
+.b-closed{background:rgba(115,122,162,.2);color:var(--text-3)}
+.b-appr{background:rgba(122,162,247,.18);color:var(--blue)}
+
+/* ===== cross-repo pipeline ===== */
+.pipe{display:flex;align-items:stretch;gap:0;margin-top:30px}
+.stage{flex:1;background:linear-gradient(170deg,var(--bg-2),var(--bg-1));border:1px solid var(--border-2);border-radius:var(--radius);padding:24px 22px;position:relative}
+.stage .step{font-family:var(--mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
+.stage h4{font-size:18px;color:#fff;margin:8px 0 4px;font-weight:800}
+.stage .repo{font-family:var(--mono);font-size:12.5px;color:var(--cyan)}
+.stage p{font-size:13px;color:var(--text-2);margin-top:10px;line-height:1.5}
+.stage .loc{margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--green);font-weight:700}
+.arrow{display:flex;align-items:center;color:var(--purple);font-size:30px;padding:0 14px;flex:none}
+.pipe-cap{margin-top:22px;font-size:14px;color:var(--text-2);text-align:center}
+
+/* ===== PR list with size bars ===== */
+.prs{margin-top:26px;display:flex;flex-direction:column;gap:11px}
+.pr{display:grid;grid-template-columns:120px 1fr 150px;gap:16px;align-items:center;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:13px 18px}
+.pr .repo{font-family:var(--mono);font-size:13px;color:var(--text-1);font-weight:600}
+.pr .repo small{color:var(--text-3)}
+.pr .ttl{font-size:14px;color:var(--text-2)}
+.pr .barwrap{display:flex;align-items:center;gap:10px}
+.pr .bar{height:10px;border-radius:6px;background:var(--grad);min-width:6px}
+.pr .loc{font-family:var(--mono);font-size:12px;color:var(--green);white-space:nowrap}
+
+/* ===== blockers / next ===== */
+.blocker{background:var(--bg-2);border-left:3px solid var(--red);padding:16px 22px;border-radius:10px;margin-bottom:13px}
+.blocker.warn{border-left-color:var(--orange)}
+.blocker h4{font-size:17px;color:#fff;margin-bottom:5px}
+.blocker p{font-size:14px;color:var(--text-2);line-height:1.5}
+.blocker .meta{font-family:var(--mono);font-size:11.5px;color:var(--text-3);margin-top:7px}
+.next-row{display:grid;grid-template-columns:140px 1fr;gap:18px;padding:15px 0;border-bottom:1px dashed var(--border);align-items:baseline}
+.next-row .who{font-family:var(--mono);font-size:13px;color:var(--blue)}
+.next-row .task b{color:#fff;font-weight:600}
+.next-row .task span{color:var(--text-3);font-size:13px;margin-left:10px}
+
+/* ===== small cards grid (investigations) ===== */
+.mini{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.mini .ic{font-size:22px}
+.mini h4{font-size:15.5px;color:#fff;margin:8px 0 5px;font-weight:700}
+.mini p{font-size:13px;color:var(--text-2);line-height:1.5}
+
+/* link styling */
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ===== entry animations ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.slide.is-active .anim{animation:fadeUp .55s cubic-bezier(.2,.7,.2,1) both}
+.slide.is-active .stagger>*{animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both}
+.slide.is-active .stagger>*:nth-child(1){animation-delay:.05s}
+.slide.is-active .stagger>*:nth-child(2){animation-delay:.12s}
+.slide.is-active .stagger>*:nth-child(3){animation-delay:.19s}
+.slide.is-active .stagger>*:nth-child(4){animation-delay:.26s}
+.slide.is-active .stagger>*:nth-child(5){animation-delay:.33s}
+.slide.is-active .stagger>*:nth-child(6){animation-delay:.40s}
+.slide.is-active .stagger>*:nth-child(7){animation-delay:.47s}
+.slide.is-active .pop{animation:pop .5s ease both}
+
+/* ===== overview grid (O key) ===== */
+.overview{position:fixed;inset:0;background:rgba(13,14,20,.96);z-index:20;display:none;padding:46px;overflow:auto}
+.overview.open{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-content:start}
+.ov-thumb{aspect-ratio:16/10;background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;overflow:hidden;position:relative;transition:.15s}
+.ov-thumb:hover{border-color:var(--blue);transform:translateY(-2px)}
+.ov-thumb .n{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.ov-thumb .t{font-size:15px;color:var(--text-1);font-weight:700;margin-top:8px;line-height:1.3}
+
+@media (max-width:900px){
+  .slide{padding:40px 26px}
+  .h1{font-size:38px}.h2{font-size:28px}.lede{font-size:16px}
+  .g2,.g3{grid-template-columns:1fr}
+  .pipe{flex-direction:column}.arrow{transform:rotate(90deg);padding:6px 0}
+  .pr{grid-template-columns:1fr}.pr .barwrap{display:none}
+  .deck-head{left:26px;right:26px}.foot{left:26px;right:26px}
+}
+</style>
+</head>
+<body>
+<!-- ============================================================================
+  REUSABLE WEEKLY-REPORT DECK TEMPLATE  (tokyo-night, self-contained, no build)
+  Borrowed from the html-ppt skill design system. KEEP <style>, .deck-head,
+  .progress/.pageno/.overview, and the <script> runtime AS-IS — they are stable.
+  REPLACE ONLY the slide content inside <div class="deck">…</div>.
+
+  The content below is FICTIONAL SAMPLE DATA (an "Acme" team) that demonstrates
+  every component. When generating a real report, replace it wholesale.
+
+  Slide-mapping recipe (drop a slide if a section is empty; reorder freely):
+    1. Cover      — the week's 1–2 headline themes (grad-text), one-line summary.
+    2. KPIs       — up to 6 .kpi cards: merged PRs, lines added, key counts.
+    3. Highlights — up to 2 .feat cards for the most important threads.
+    4. Pipeline   — ONLY if a feature spans repos: .pipe of .stage→.arrow→.stage.
+    5. Merged PRs — .pr rows; bar width = additions / max-additions * 100%.
+    6. Open/Closed— .feat cards with .badge (b-open/b-closed/b-merged/b-appr).
+    7. Investig.  — .mini cards grid for investigations / tooling.
+    8. Risks      — .blocker (add .warn for medium) cards.
+    9. Next       — .next-row (owner → task) rows.
+   10. Closing    — sign-off + Data Notes provenance line.
+  Tags: t-feat/t-fix/t-infra/t-build/t-doc. Add data-title="…" per slide (overview).
+  Theme: to change palette, swap the :root token values (e.g. a light corporate set).
+============================================================================= -->
+<div class="deck-head">
+  <span class="brand">Acme · Weekly</span>
+  <span class="week-chip">2026-04-07 → 04-13</span>
+</div>
+
+<div class="deck">
+
+  <!-- 1. COVER -->
+  <section class="slide center" data-title="Cover">
+    <div class="anim"><p class="kicker">Weekly Report</p></div>
+    <h1 class="h1 mt-m anim" style="max-width:1000px">This week:<br><span class="grad-text">Checkout v2 shipped</span> +<br><span class="grad-text">Auth migration landed</span></h1>
+    <p class="lede mt-l anim" style="max-width:760px">7 PRs merged · ~<b class="grn">4.1k</b> lines added · auth migration completed across 3 services · two experiments converged.</p>
+    <div class="anim mt-l" style="display:flex;gap:14px"><span class="week-chip">team: payments</span><span class="week-chip">↔ arrows · O overview · F fullscreen</span></div>
+  </section>
+
+  <!-- 2. KPIs -->
+  <section class="slide" data-title="At a glance">
+    <p class="kicker anim">At a glance</p>
+    <h2 class="h2 anim mt-s">The numbers</h2>
+    <div class="grid g3 mt-l stagger">
+      <div class="kpi p"><div class="label">Merged PRs</div><div class="value">7</div><div class="sub">across 4 repos</div></div>
+      <div class="kpi g"><div class="label">Lines added</div><div class="value">4.1<small>k</small></div><div class="sub">+4,120 / −890 (merged)</div></div>
+      <div class="kpi c"><div class="label">Auth migration</div><div class="value">3<small> svc</small></div><div class="sub">api → web → mobile</div></div>
+      <div class="kpi"><div class="label">Experiments</div><div class="value">2</div><div class="sub">both converged</div></div>
+      <div class="kpi o"><div class="label">Open / in review</div><div class="value">3</div><div class="sub">2 features · 1 fix</div></div>
+      <div class="kpi"><div class="label">Active sessions</div><div class="value">28</div><div class="sub">Claude Code evidence</div></div>
+    </div>
+  </section>
+
+  <!-- 3. HIGHLIGHTS -->
+  <section class="slide" data-title="Highlights">
+    <p class="kicker anim">Highlights</p>
+    <h2 class="h2 anim mt-s">The two things that mattered</h2>
+    <div class="grid g2 mt-l stagger">
+      <div class="feat">
+        <div class="ic">🛒</div>
+        <h3>Checkout v2 shipped</h3>
+        <p>New one-page checkout merged in <span class="mono accent">web-app#310</span> (+860). A/B test won +14% conversion; rolled out behind a flag to 100%.</p>
+        <div class="tags"><span class="tag t-feat">feature</span><span class="tag t-feat">A/B win</span><span class="tag t-infra">flagged rollout</span></div>
+      </div>
+      <div class="feat">
+        <div class="ic">🔐</div>
+        <h3>Auth migration landed</h3>
+        <p>OAuth → session-token migration completed across three services: <span class="mono accent">api-gateway#482</span>, <span class="mono accent">web-app#310</span>, <span class="mono accent">mobile#155</span>. Zero-downtime cutover.</p>
+        <div class="tags"><span class="tag t-feat">migration</span><span class="tag t-infra">zero-downtime</span><span class="tag t-fix">backward-compatible</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PIPELINE (only when a feature spans repos) -->
+  <section class="slide" data-title="Auth migration">
+    <p class="kicker anim">Deep dive · Auth migration</p>
+    <h2 class="h2 anim mt-s">One feature, three services</h2>
+    <div class="pipe stagger">
+      <div class="stage">
+        <div class="step">① BACKEND</div>
+        <h4>Session tokens</h4>
+        <div class="repo">api-gateway #482</div>
+        <p>Issue/verify session tokens, dual-read during cutover, revocation endpoint.</p>
+        <div class="loc">+1240 / −410 · merged 04-09</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage">
+        <div class="step">② WEB</div>
+        <h4>Client integration</h4>
+        <div class="repo">web-app #310</div>
+        <p>Swap OAuth client for token flow, silent refresh, logout-everywhere.</p>
+        <div class="loc">+860 / −300 · merged 04-11</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage">
+        <div class="step">③ MOBILE</div>
+        <h4>App integration</h4>
+        <div class="repo">mobile #155</div>
+        <p>Keychain storage, background refresh, migration of existing sessions.</p>
+        <div class="loc">+320 / −120 · merged 04-12</div>
+      </div>
+    </div>
+    <p class="pipe-cap anim">Backend issues tokens → web adopts → mobile adopts. All merged this week, end-to-end live.</p>
+  </section>
+
+  <!-- 5. MERGED PRs -->
+  <section class="slide" data-title="Merged PRs">
+    <p class="kicker anim">Merged · 6 PRs · ~3.1k lines</p>
+    <h2 class="h2 anim mt-s">Merged PRs (by size)</h2>
+    <div class="prs stagger">
+      <div class="pr"><div class="repo">api-gateway <small>#482</small></div><div class="ttl">Session-token auth + dual-read cutover</div><div class="barwrap"><span class="bar" style="width:100%"></span><span class="loc">+1240</span></div></div>
+      <div class="pr"><div class="repo">web-app <small>#310</small></div><div class="ttl">Checkout v2 + token client flow</div><div class="barwrap"><span class="bar" style="width:69%"></span><span class="loc">+860</span></div></div>
+      <div class="pr"><div class="repo">search <small>#77</small></div><div class="ttl">Relevance re-ranking experiment</div><div class="barwrap"><span class="bar" style="width:44%"></span><span class="loc">+540</span></div></div>
+      <div class="pr"><div class="repo">mobile <small>#155</small></div><div class="ttl">Token auth + keychain storage · <span class="b-appr badge">approved</span></div><div class="barwrap"><span class="bar" style="width:26%"></span><span class="loc">+320</span></div></div>
+      <div class="pr"><div class="repo">web-app <small>#312</small></div><div class="ttl">Fix: cart total rounding on multi-currency</div><div class="barwrap"><span class="bar" style="width:12%"></span><span class="loc">+145</span></div></div>
+      <div class="pr"><div class="repo">docs <small>#58</small></div><div class="ttl">Auth migration runbook</div><div class="barwrap"><span class="bar" style="width:3%"></span><span class="loc">+40</span></div></div>
+    </div>
+  </section>
+
+  <!-- 6. OPEN / CLOSED -->
+  <section class="slide" data-title="In flight">
+    <p class="kicker anim">Open / in review + closed</p>
+    <h2 class="h2 anim mt-s">In flight &amp; wrapping up</h2>
+    <div class="grid g2 mt-l stagger">
+      <div class="feat"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono accent">web-app #318</span><span class="badge b-open">open</span></div><h3 style="font-size:19px">Saved payment methods</h3><p>Vault + one-click reuse at checkout (+210/−30). In review.</p></div>
+      <div class="feat"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono accent">api-gateway #486</span><span class="badge b-open">open</span></div><h3 style="font-size:19px">Rate-limit per API key</h3><p>Sliding-window limiter + 429 headers (+180/−10). Awaiting review.</p></div>
+      <div class="feat"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono accent">search #79</span><span class="badge b-closed">closed</span></div><h3 style="font-size:19px">Spike: vector recall</h3><p>Throwaway spike to size an embedding index; closed after findings captured.</p></div>
+      <div class="feat"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono accent">infra #41</span><span class="badge b-merged">merged</span></div><h3 style="font-size:19px">CI cache speedup</h3><p>Layer caching cut pipeline time 9m → 5m (+90/−60).</p></div>
+    </div>
+  </section>
+
+  <!-- 7. INVESTIGATIONS / TOOLING -->
+  <section class="slide" data-title="Investigations">
+    <p class="kicker anim">Investigations · tooling</p>
+    <h2 class="h2 anim mt-s">Investigations &amp; tooling</h2>
+    <div class="grid g3 mt-l stagger">
+      <div class="mini"><div class="ic">🔎</div><h4>Checkout latency</h4><p>Traced p95 spike to a synchronous tax call; queued for async follow-up.</p></div>
+      <div class="mini"><div class="ic">🧪</div><h4>Search relevance</h4><p>Re-ranking experiment lifted CTR +6%; needs a larger holdout before rollout.</p></div>
+      <div class="mini"><div class="ic">🛠️</div><h4>Local dev seed script</h4><p>One-command seed of realistic test data; cut new-dev setup from 1h to 5m.</p></div>
+      <div class="mini"><div class="ic">📉</div><h4>Error-budget review</h4><p>Audited last 30 days of alerts; 40% were a single noisy check, now tuned.</p></div>
+      <div class="mini"><div class="ic">🔁</div><h4>Webhook retries</h4><p>Found non-idempotent handler causing double charges under retry; patch queued.</p></div>
+      <div class="mini"><div class="ic">📚</div><h4>Migration runbook</h4><p>Documented the auth cutover steps + rollback so the next service is faster.</p></div>
+    </div>
+  </section>
+
+  <!-- 8. RISKS -->
+  <section class="slide" data-title="Risks">
+    <p class="kicker anim">Risks · blockers</p>
+    <h2 class="h2 anim mt-s">Risks &amp; blockers</h2>
+    <div class="mt-l stagger" style="max-width:1000px">
+      <div class="blocker"><h4>Double-charge under webhook retry</h4><p>Non-idempotent payment webhook can charge twice on provider retry. Patch in review; needs to land before the weekend traffic peak.</p><div class="meta">owner: @dana · severity: high · ETA: Mon</div></div>
+      <div class="blocker warn"><h4>Checkout p95 latency +120ms</h4><p>Synchronous tax lookup on the hot path. Mitigation: move to async with a cached fallback.</p><div class="meta">owner: @lee · severity: medium</div></div>
+      <div class="blocker warn"><h4>Search experiment needs bigger holdout</h4><p>+6% CTR is promising but the sample is small; risk of regression at full rollout.</p><div class="meta">owner: @mira · decision needed before rollout</div></div>
+    </div>
+  </section>
+
+  <!-- 9. NEXT -->
+  <section class="slide" data-title="Next">
+    <p class="kicker anim">Next focus</p>
+    <h2 class="h2 anim mt-s">Next week</h2>
+    <div class="mt-l stagger" style="max-width:1000px">
+      <div class="next-row"><div class="who">payments</div><div class="task"><b>Land webhook idempotency fix</b><span>blocker · must merge before weekend peak</span></div></div>
+      <div class="next-row"><div class="who">checkout</div><div class="task"><b>Move tax lookup off the hot path</b><span>async + cached fallback to recover p95</span></div></div>
+      <div class="next-row"><div class="who">search</div><div class="task"><b>Run larger relevance holdout</b><span>decision doc on rollout vs iterate</span></div></div>
+      <div class="next-row"><div class="who">web</div><div class="task"><b>Ship saved payment methods (#318)</b><span>finish review + flag rollout</span></div></div>
+      <div class="next-row"><div class="who">platform</div><div class="task"><b>Per-key rate limiting (#486)</b><span>review + staged enable</span></div></div>
+    </div>
+  </section>
+
+  <!-- 10. CLOSING -->
+  <section class="slide center" data-title="Sign-off">
+    <p class="kicker anim">Fin · 2026-04-07 → 04-13</p>
+    <h1 class="h1 mt-m anim">Solid week 🚀</h1>
+    <p class="lede mt-m anim" style="max-width:720px">Checkout v2 and the auth migration both shipped. Next: close out the webhook fix and the latency follow-up.</p>
+    <div class="mt-l anim" style="font-family:var(--mono);font-size:12.5px;color:var(--text-4);max-width:760px;line-height:1.7">
+      Data: generated from 28 Claude Code sessions + GitHub PR metadata via <span class="accent">gh</span>.<br>Report-generation and tooling-maintenance sessions excluded. (All names above are fictional sample data.)
+    </div>
+  </section>
+
+</div>
+
+<div class="progress"></div>
+<div class="pageno"></div>
+<div class="overview"></div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var n = slides.length, cur = 0;
+  var progress = document.querySelector('.progress');
+  var pageno = document.querySelector('.pageno');
+  var overview = document.querySelector('.overview');
+
+  function clamp(i){ return Math.max(0, Math.min(n-1, i)); }
+  function show(i){
+    cur = clamp(i);
+    slides.forEach(function(s,idx){ s.classList.toggle('is-active', idx===cur); });
+    progress.style.width = ((cur+1)/n*100) + '%';
+    pageno.textContent = (cur+1) + ' / ' + n;
+    if (location.hash !== '#/'+(cur+1)) history.replaceState(null,'','#/'+(cur+1));
+  }
+  function go(i){ show(i); }
+  function next(){ show(cur+1); }
+  function prev(){ show(cur-1); }
+
+  // build overview thumbnails
+  slides.forEach(function(s,idx){
+    var t = document.createElement('div');
+    t.className = 'ov-thumb';
+    t.innerHTML = '<div class="n">'+(idx+1).toString().padStart(2,'0')+'</div><div class="t">'+(s.getAttribute('data-title')||('Slide '+(idx+1)))+'</div>';
+    t.addEventListener('click', function(){ toggleOverview(false); go(idx); });
+    overview.appendChild(t);
+  });
+  function toggleOverview(force){
+    var open = force!==undefined ? force : !overview.classList.contains('open');
+    overview.classList.toggle('open', open);
+  }
+
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k==='ArrowRight'||k===' '||k==='PageDown'||k==='ArrowDown'){ e.preventDefault(); next(); }
+    else if (k==='ArrowLeft'||k==='PageUp'||k==='ArrowUp'){ e.preventDefault(); prev(); }
+    else if (k==='Home'){ go(0); }
+    else if (k==='End'){ go(n-1); }
+    else if (k==='f'||k==='F'){ if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}else{document.exitFullscreen&&document.exitFullscreen();} }
+    else if (k==='o'||k==='O'){ toggleOverview(); }
+    else if (k==='Escape'){ toggleOverview(false); }
+    else if (/^[1-9]$/.test(k)){ go(parseInt(k,10)-1); }
+  });
+
+  // touch swipe
+  var x0=null;
+  document.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  document.addEventListener('touchend',function(e){ if(x0===null)return; var dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>50){ dx<0?next():prev(); } x0=null; });
+
+  // init from hash
+  var m = /^#\/(\d+)$/.exec(location.hash);
+  show(m ? clamp(parseInt(m[1],10)-1) : 0);
+})();
+</script>
+</body>
+</html>

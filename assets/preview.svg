@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" font-family="'Inter','Segoe UI',system-ui,sans-serif">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7aa2f7"/><stop offset="1" stop-color="#bb9af7"/>
+    </linearGradient>
+    <radialGradient id="bg1" cx="0.82" cy="-0.1" r="0.7">
+      <stop offset="0" stop-color="#222843"/><stop offset="1" stop-color="#1a1b26" stop-opacity="0"/>
+    </radialGradient>
+    <style>
+      .mono{font-family:'JetBrains Mono','SFMono-Regular',ui-monospace,monospace}
+      .b{font-weight:800}.sb{font-weight:700}
+    </style>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="740" fill="#1a1b26"/>
+  <rect width="1200" height="740" fill="url(#bg1)"/>
+  <rect x="0" y="737" width="1200" height="3" fill="url(#grad)"/>
+
+  <!-- header -->
+  <text x="70" y="58" font-size="16" class="b" fill="#a9b1d6"><tspan fill="#7aa2f7">◆ </tspan>Acme · Weekly</text>
+  <g>
+    <rect x="980" y="40" width="150" height="28" rx="8" fill="#1f2335" stroke="#2f3450"/>
+    <text x="1055" y="58" font-size="12" class="mono" fill="#a9b1d6" text-anchor="middle">2026-04-07 → 04-13</text>
+  </g>
+
+  <!-- title block -->
+  <text x="70" y="138" font-size="13" class="b" letter-spacing="3" fill="#7aa2f7">WEEKLY REPORT</text>
+  <text x="70" y="190" font-size="42" class="b">
+    <tspan fill="url(#grad)">Checkout v2</tspan><tspan fill="#ffffff"> + </tspan><tspan fill="url(#grad)">Auth migration</tspan>
+  </text>
+  <text x="70" y="226" font-size="18" fill="#a9b1d6">7 PRs merged · +4.1k lines · auth migration across 3 services · 2 experiments converged.</text>
+
+  <!-- KPI cards -->
+  <g>
+    <!-- card 1 -->
+    <rect x="70" y="266" width="251" height="138" rx="14" fill="#1f2335" stroke="#2f3450"/>
+    <rect x="70" y="266" width="5" height="138" rx="2.5" fill="#bb9af7"/>
+    <text x="96" y="300" font-size="12" class="sb" letter-spacing="1.2" fill="#737aa2">MERGED PRS</text>
+    <text x="96" y="352" font-size="44" class="b" fill="#ffffff">7</text>
+    <text x="96" y="384" font-size="12.5" fill="#737aa2">across 4 repos</text>
+    <!-- card 2 -->
+    <rect x="339" y="266" width="251" height="138" rx="14" fill="#1f2335" stroke="#2f3450"/>
+    <rect x="339" y="266" width="5" height="138" rx="2.5" fill="#9ece6a"/>
+    <text x="365" y="300" font-size="12" class="sb" letter-spacing="1.2" fill="#737aa2">LINES ADDED</text>
+    <text x="365" y="352" font-size="44" class="b" fill="#ffffff">4.1<tspan font-size="20" fill="#a9b1d6">k</tspan></text>
+    <text x="365" y="384" font-size="12.5" fill="#737aa2">+4,120 / −890 (merged)</text>
+    <!-- card 3 -->
+    <rect x="608" y="266" width="251" height="138" rx="14" fill="#1f2335" stroke="#2f3450"/>
+    <rect x="608" y="266" width="5" height="138" rx="2.5" fill="#7dcfff"/>
+    <text x="634" y="300" font-size="12" class="sb" letter-spacing="1.2" fill="#737aa2">AUTH MIGRATION</text>
+    <text x="634" y="352" font-size="44" class="b" fill="#ffffff">3<tspan font-size="20" fill="#a9b1d6"> svc</tspan></text>
+    <text x="634" y="384" font-size="12.5" fill="#737aa2">api → web → mobile</text>
+    <!-- card 4 -->
+    <rect x="877" y="266" width="251" height="138" rx="14" fill="#1f2335" stroke="#2f3450"/>
+    <rect x="877" y="266" width="5" height="138" rx="2.5" fill="#7aa2f7"/>
+    <text x="903" y="300" font-size="12" class="sb" letter-spacing="1.2" fill="#737aa2">ACTIVE SESSIONS</text>
+    <text x="903" y="352" font-size="44" class="b" fill="#ffffff">28</text>
+    <text x="903" y="384" font-size="12.5" fill="#737aa2">Claude Code evidence</text>
+  </g>
+
+  <!-- pipeline -->
+  <text x="70" y="466" font-size="13" class="b" letter-spacing="2" fill="#7aa2f7">ONE FEATURE · THREE SERVICES</text>
+  <g>
+    <!-- stage 1 -->
+    <rect x="70" y="486" width="320" height="150" rx="14" fill="#1f2335" stroke="#3b4261"/>
+    <text x="94" y="518" font-size="12" class="mono" fill="#7aa2f7">① BACKEND</text>
+    <text x="94" y="548" font-size="18" class="b" fill="#ffffff">Session tokens</text>
+    <text x="94" y="574" font-size="12.5" class="mono" fill="#7dcfff">api-gateway #482</text>
+    <text x="94" y="612" font-size="12.5" class="mono sb" fill="#9ece6a">+1240 / −410 · merged 04-09</text>
+    <text x="410" y="566" font-size="28" fill="#bb9af7">→</text>
+    <!-- stage 2 -->
+    <rect x="440" y="486" width="320" height="150" rx="14" fill="#1f2335" stroke="#3b4261"/>
+    <text x="464" y="518" font-size="12" class="mono" fill="#7aa2f7">② WEB</text>
+    <text x="464" y="548" font-size="18" class="b" fill="#ffffff">Client integration</text>
+    <text x="464" y="574" font-size="12.5" class="mono" fill="#7dcfff">web-app #310</text>
+    <text x="464" y="612" font-size="12.5" class="mono sb" fill="#9ece6a">+860 / −300 · merged 04-11</text>
+    <text x="780" y="566" font-size="28" fill="#bb9af7">→</text>
+    <!-- stage 3 -->
+    <rect x="810" y="486" width="320" height="150" rx="14" fill="#1f2335" stroke="#3b4261"/>
+    <text x="834" y="518" font-size="12" class="mono" fill="#7aa2f7">③ MOBILE</text>
+    <text x="834" y="548" font-size="18" class="b" fill="#ffffff">App integration</text>
+    <text x="834" y="574" font-size="12.5" class="mono" fill="#7dcfff">mobile #155</text>
+    <text x="834" y="612" font-size="12.5" class="mono sb" fill="#9ece6a">+320 / −120 · merged 04-12</text>
+  </g>
+
+  <!-- footer hint -->
+  <text x="70" y="694" font-size="12.5" class="mono" fill="#565f89">← →  navigate     ·     O  overview     ·     F  fullscreen     ·     1–9  jump slide</text>
+  <text x="1130" y="694" font-size="12" class="mono" fill="#565f89" text-anchor="end">4 / 10</text>
+</svg>
